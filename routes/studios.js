@@ -1,0 +1,44 @@
+var express = require('express');
+var router = express.Router();
+var studio = require("../api/controllers/StudioController.js");
+
+// Get all studio posts
+router.get('/', function(req, res) {
+  studio.list(req, res);
+});
+
+router.get('/getStudio/:id', function(req, res) {
+  console.log("getStudio:id");
+  studio.findOne(req, res);
+});
+
+router.get('/getStudio', function(req, res) {
+  console.log("getStudio");
+  studio.getAll(req, res);
+});
+
+
+router.post('/createStudio', function(req, res) {
+  console.log("getStudio");
+  studio.createStudio(req, res);
+});
+
+
+
+
+/** Calender details */
+
+
+router.get('/getStudioService/:id', function(req, res) {
+  console.log("getStudioService");
+  studio.getStudioService(req, res);
+});
+
+router.post('/checkSlot', function(req, res) {
+  console.log("body: ", req.body);
+  studio.checkSlot(req, res).then((data)=>{
+    res.json({data: data});
+  });
+});
+
+module.exports = router;
