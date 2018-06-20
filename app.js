@@ -11,19 +11,12 @@ mongoose.Promise = global.Promise;
 
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+// var usersRouter = require('./routes/users');
 var studios = require('./routes/studios');
-var blogs = require('./routes/blogs');
+// var blogs = require('./routes/blogs');
 var bookings = require('./routes/bookings');
 
 var app = express();
-
-//DB connection
-mongoose.connect('mongodb://localhost/blog')
-  .then(() =>  console.log('DB Connection successfull'))
-  .catch((err) => console.error(err));
-
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -37,9 +30,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// app.use('/users', usersRouter);
 app.use('/studios', studios);
-app.use('/blogs', blogs);
+// app.use('/blogs', blogs);
 app.use('/bookings', bookings);
 
 
