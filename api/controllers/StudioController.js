@@ -53,7 +53,7 @@ var studioController = {
       this.getAllBookedDate(req.params.id)
     ]).then(function (success) {
         var bookings = prepareBookingsDetails(Object.assign(success[2]), Object.assign(success[3]));
-        var response = Object.assign({}, success[0][0], {services: success[1]}, { bookings: bookings}, {booked: success[3]});
+        var response = Object.assign({}, success[0][0], {services: success[1]}, { bookings: bookings});
         res.json({
           data: response
         });

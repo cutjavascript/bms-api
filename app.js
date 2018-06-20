@@ -4,8 +4,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
+var cors = require('cors');
+// var mongoose = require('mongoose');
+// mongoose.Promise = global.Promise;
 
 
 
@@ -21,7 +22,13 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
+/*
+var corsOptions = {
+  origin: 'http://localhost:3000',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+*/
+app.use(cors())
 app.use(logger('dev'));
 
 app.use(bodyParser.json());
