@@ -35,10 +35,7 @@ router.get('/getStudioService/:id', function(req, res) {
 });
 
 router.post('/checkSlot', function(req, res) {
-  console.log("body: ", req.body);
-  studio.checkSlot(req, res).then((data)=>{
-    res.json({data: data});
-  });
+  studio.checkSlot(req, res);
 });
 
 module.exports = router;

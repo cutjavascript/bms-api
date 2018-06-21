@@ -10,7 +10,13 @@ var bookingController = {
             }
             
             var promiseArr = [];
-            var cartId =  (new Date).getTime();
+            var cartId;
+
+            if(data.cartId && data.cartId != 0){
+                cartId =  (new Date).getTime();
+            }else{
+                cartId = data.cartId;
+            }
             if(data.services){
                 promiseArr.push(booking.setCart(data, cartId));
             }

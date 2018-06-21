@@ -1,27 +1,21 @@
 const mysql = require('mysql');
 var con = require('../connection/mysqlcon');
+// var InsertQuery = require('mysql-insert-multiple');
 
 let model = {
     setCart: (data, cartId) => {
         console.log("setCart: ", data);
+        // ${data.services[i].price},${data.services[i].required_slots}
         values = [];
         for(let i=0; i<data.services.length; i++){
             values[i] = [];
-            values[i].push(
-                data.services[i].service_id,
-                data.services[i].price,
-                data.services[i].service_count,
-                data.services[i].required_slots,
-                data.user_id,
-                data.studio_id,
-                cartId
-            );
+            values[i].push(`(${data.services[i].service_id},${data.services[i].service_count},${data.user_id},${data.studio_id},${cartId},(SELECT price FROM studio_service where id = ${data.services[i].service_id}), (SELECT slots_required FROM studio_service where id = ${data.services[i].service_id}))`);
         }
         console.log("setCart: ", values);
         return new Promise(function(resolve, reject) {
             try {
-                con.query(`INSERT INTO booking_service_cart (service_id, price, count, required_slots, user_id, studio_id, cartid) 
-                VALUES ?`, [values],
+                con.query(`INSERT INTO booking_service_cart (service_id, count, user_id, studio_id, cart_id, price, required_slots) 
+                VALUES ${values.join(',')}`,
                 function(err, rows, fields) {
                     if (err) {
                         return reject(err);
@@ -38,20 +32,13 @@ let model = {
         values = [];
         for(let i=0; i<data.bookings.length; i++){
             values[i] = [];
-            values[i].push(
-                data.bookings[i].slot_id,
-                data.bookings[i].amount,
-                data.bookings[i].booking_time,
-                data.user_id,
-                data.studio_id,
-                cartId
-            );
+            values[i].push(`(${data.bookings[i].slot_id},(select CASE ${data.bookings[i].booking_time} WHEN 0 THEN price ELSE ${data.bookings[i].booking_time} END as ${data.bookings[i].booking_time} from studio_timeslots where id = ${data.bookings[i].slot_id}),'${data.bookings[i].booking_time}','${data.user_id}','${data.studio_id}',${cartId})`);
         }
-        console.log("setBookingCart: ", values);
+        // console.log("setBookingCart: ", values);
         return new Promise(function(resolve, reject) {
             try {
-                con.query(`INSERT INTO booking_cart (slot_id, price, booking_time, user_id, studio_id, cartid) 
-                VALUES ?`, [values],
+                con.query(`INSERT INTO booking_cart (slot_id, price, booking_time, user_id, studio_id, cart_id) 
+                VALUES ${values.join(',')}`,
                 function(err, rows, fields) {
                     if (err) {
                         return reject(err);
