@@ -4,31 +4,31 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
+var cors = require('cors');
+// var mongoose = require('mongoose');
+// mongoose.Promise = global.Promise;
 
 
 
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+// var usersRouter = require('./routes/users');
 var studios = require('./routes/studios');
-var blogs = require('./routes/blogs');
+// var blogs = require('./routes/blogs');
 var bookings = require('./routes/bookings');
 
 var app = express();
 
-//DB connection
-mongoose.connect('mongodb://localhost/blog')
-  .then(() =>  console.log('DB Connection successfull'))
-  .catch((err) => console.error(err));
-
-
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
+/*
+var corsOptions = {
+  origin: 'http://localhost:3000',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+*/
+app.use(cors())
 app.use(logger('dev'));
 
 app.use(bodyParser.json());
@@ -37,9 +37,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// app.use('/users', usersRouter);
 app.use('/studios', studios);
-app.use('/blogs', blogs);
+// app.use('/blogs', blogs);
 app.use('/bookings', bookings);
 
 
