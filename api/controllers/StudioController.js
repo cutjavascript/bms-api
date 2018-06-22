@@ -63,11 +63,21 @@ var studioController = {
           studio.getStudioCalender(req.params.id),
           studio.getAllBookedDate(req.params.id)
         ]).then(function (success) {
+          if(success.length > 0){
             var bookings = prepareBookingsDetails(Object.assign(success[2]), Object.assign(success[3]));
             var response = Object.assign({}, success[0][0], {services: success[1]}, { bookings: bookings});
             res.json({
               data: response
             });
+          }else{
+            res.json({
+              data: {
+                "status": false,
+                "msg":"Something went worng"
+                }
+            })
+          }
+            
         }).catch(function(error){
           res.json({
             data: {
