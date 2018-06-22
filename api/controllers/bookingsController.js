@@ -12,31 +12,32 @@ var bookingController = {
             var promiseArr = [];
             var cartId;
 
-            if(data.cartId && data.cartId != 0){
+            if(data.cart_id && data.cart_id == 0){
                 cartId =  (new Date).getTime();
             }else{
-                cartId = data.cartId;
+                cartId = data.cart_id;
             }
+            // console.log(data.services, cartId);
             if(data.services){
                 promiseArr.push(booking.setCart(data, cartId));
             }
             if(data.bookings){
                 promiseArr.push(booking.setBookingCart(data, cartId));
             }
+            // console.log(bookingController, cartId);
             Promise.all(promiseArr)
             .then(function (success) {
                 res.json({
                   data: {
-                      status: "Success",
+                      status: true,
                       msg:"data successfuly inserted",
                       cart_id: cartId
                   }
                 });
             }).catch(function(error) {
-              console.log(error);
               res.json({
                   data: {
-                    "status":"error",
+                    "status": false,
                     "msg":"Sorry this slot has already been booked",
                     "cart_id":0
                     }

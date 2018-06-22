@@ -12,7 +12,7 @@ var studioController = {
       console.log(error);
       res.json({
           data: {
-            "status":"error",
+            "status": false,
             "msg": error
             }
       })
@@ -28,7 +28,7 @@ var studioController = {
       console.log(error);
       res.json({
           data: {
-            "status":"error",
+            "status": false,
             "msg": error
             }
       })
@@ -49,7 +49,7 @@ var studioController = {
       console.log(error);
       res.json({
           data: {
-            "status":"error",
+            "status": false,
             "msg": error
             }
       })
@@ -64,14 +64,14 @@ var studioController = {
           studio.getAllBookedDate(req.params.id)
         ]).then(function (success) {
             var bookings = prepareBookingsDetails(Object.assign(success[2]), Object.assign(success[3]));
-            var response = Object.assign({}, success[0][0], {services: success[1]}, { bookings: bookings}, {booked: success[3]});
+            var response = Object.assign({}, success[0][0], {services: success[1]}, { bookings: bookings});
             res.json({
               data: response
             });
         }).catch(function(error){
           res.json({
             data: {
-              "status":"error",
+              "status": false,
               "msg":error
               }
           })
@@ -79,7 +79,7 @@ var studioController = {
     }else{
       res.json({
         data: {
-          "status":"error",
+          "status": false,
           "msg": "Id should be a number"
           }
       })
@@ -93,7 +93,7 @@ var studioController = {
     .catch(function(error){
       res.json({
         data: {
-          "status":"error",
+          "status": false,
           "msg":error
           }
       })
@@ -115,16 +115,18 @@ function prepareBookingsDetails(slotsArr, booked){
   for(let k=0; k<slotsArr.length; k++){
       slotsArr[k].timings = [];
       for(let j in slotsArr[k]){
-        if(j !== 'slotId' && j !== 'studioId' && j !== 'date' && j !== 'timings'){
+        if(j !== 'slot_id' && j !== 'studio_id' && j !== 'day' && j !== 'timings' && slotsArr[k][j] != 0){
           var timings = {
             hour: j,
-            amount: slotsArr[k][j],
+            amount: parseInt(slotsArr[k][j], 10),
             booked: bookedObj[slotsArr[k].slotId+j] ? true : false 
           };
           slotsArr[k].timings.push(timings);
           delete slotsArr[k][j];
-        }else if(j === 'date'){
-          slotsArr[k][j] = moment(slotsArr[k][j]).format('YYYYMMDDHHmmss');
+        }else if(j === 'day'){
+          slotsArr[k][j] = moment(slotsArr[k][j]).format('YYYYMMDD');
+        }else if(slotsArr[k][j] == 0){
+          delete slotsArr[k][j];
         }
       }
   }

@@ -1,25 +1,25 @@
 const mysql = require('mysql');
 var con = require('../connection/mysqlcon');
-// var InsertQuery = require('mysql-insert-multiple');
 
 let model = {
     setCart: (data, cartId) => {
-        console.log("setCart: ", data);
-        // ${data.services[i].price},${data.services[i].required_slots}
+        // console.log("setCart: ", data);
         values = [];
         for(let i=0; i<data.services.length; i++){
             values[i] = [];
-            values[i].push(`(${data.services[i].service_id},${data.services[i].service_count},${data.user_id},${data.studio_id},${cartId},(SELECT price FROM studio_service where id = ${data.services[i].service_id}), (SELECT slots_required FROM studio_service where id = ${data.services[i].service_id}))`);
+            var id = data.services[i].id ? data.services[i].id : '';
+            values[i].push(`('${id}',${data.services[i].service_id},${data.services[i].service_count},${data.user_id},${data.studio_id},${cartId},(SELECT price FROM studio_service where id = ${data.services[i].service_id}), (SELECT slots_required FROM studio_service where id = ${data.services[i].service_id}))`);
         }
-        console.log("setCart: ", values);
+        // console.log("setCart: ", values);
         return new Promise(function(resolve, reject) {
             try {
-                con.query(`INSERT INTO booking_service_cart (service_id, count, user_id, studio_id, cart_id, price, required_slots) 
-                VALUES ${values.join(',')}`,
+                con.query(`INSERT INTO booking_service_cart (id, service_id, service_count, user_id, studio_id, cart_id, price, required_slots) 
+                VALUES ${values.join(',')} ON DUPLICATE KEY UPDATE service_count=VALUES(service_count)`,
                 function(err, rows, fields) {
                     if (err) {
                         return reject(err);
                     } else {
+                        console.log("ca;backs-->", rows, fields, this.insertId);
                         return resolve(rows);
                     }
                 });
@@ -54,6 +54,8 @@ let model = {
 }
 
 module.exports = model;
+
+// NOT EXISTS (SELECT * FROM requests WHERE subject = 'test' AND text = 'test 1234')
 
 /*
     {
