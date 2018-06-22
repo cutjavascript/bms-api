@@ -32,7 +32,7 @@ let model = {
         values = [];
         for(let i=0; i<data.bookings.length; i++){
             values[i] = [];
-            values[i].push(`(${data.bookings[i].slot_id},(select CASE ${data.bookings[i].booking_time} WHEN 0 THEN price ELSE ${data.bookings[i].booking_time} END as ${data.bookings[i].booking_time} from studio_timeslots where id = ${data.bookings[i].slot_id}),'${data.bookings[i].booking_time}','${data.user_id}','${data.studio_id}',${cartId})`);
+            values[i].push(`(${data.bookings[i].slot_id},(select ${data.bookings[i].booking_time} from studio_timeslots where id = ${data.bookings[i].slot_id}),'${data.bookings[i].booking_time}','${data.user_id}','${data.studio_id}',${cartId})`);
         }
         // console.log("setBookingCart: ", values);
         return new Promise(function(resolve, reject) {
