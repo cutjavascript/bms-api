@@ -119,7 +119,7 @@ function prepareBookingsDetails(slotsArr, booked){
           var timings = {
             hour: j,
             amount: parseInt(slotsArr[k][j], 10),
-            booked: bookedObj[slotsArr[k].slotId+j] ? true : false 
+            booked: bookedObj[slotsArr[k].slot_id+j] ? true : false 
           };
           slotsArr[k].timings.push(timings);
           delete slotsArr[k][j];
