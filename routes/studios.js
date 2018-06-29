@@ -34,6 +34,16 @@ router.get('/getStudioService/:id', function(req, res) {
   studio.getStudioService(req, res);
 });
 
+
+router.post('/getStudioService', function(req, res) {
+  console.log("getStudioService");
+  studio.studioServices(req, res);
+});
+router.post('/setServices', function(req, res) {
+  console.log("getStudioService");
+  studio.studioServices(req, res);
+});
+
 router.post('/checkSlot', function(req, res) {
   studio.checkSlot(req, res);
 });

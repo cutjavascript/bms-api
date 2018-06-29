@@ -108,6 +108,48 @@ var studioController = {
           }
       })
     });;
+  },
+
+  studioServices: function(req, res){
+    var studioId = req.body.studio_id,
+    user_id = req.body.user_id;
+    if(!isNaN(studioId)){
+      studio.getServiceByStudio(studioId)
+      .then(function (success) {
+        if(success.length > 0){
+          var response = Object.assign({}, {services: success});
+          res.json({
+            "status": "success",
+            "msg": "success",
+            data: response
+          });
+        }else{
+          res.json({
+            data: {
+              "status": false,
+              "msg":"Something went worng"
+            }
+          })
+        } 
+      }).catch(function(error){
+        res.json({
+          data: {
+            "status": false,
+            "msg":error
+          }
+        })
+      });
+    }else{
+      res.json({
+        data: {
+          "status": false,
+          "msg": "Id should be a number"
+        }
+      })
+    }
+  },
+  setService: function(req, res){
+
   }
 };
 
