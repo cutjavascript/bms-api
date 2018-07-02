@@ -3,57 +3,21 @@ var con = require('../connection/mysqlcon');
 
 
 var studio = {
-  getAll: function(){
-    return Promise((resolve, reject) => {
-      con.query(`SELECT * FROM studio`,
-      (err, rows) => {
-        if(err) {
-          reject(res, err);
-        }
-        resolve(rows);
-      });
-    })
-  },
-  findOne: function(req){
-    let url = `SELECT * FROM studio where studio_id=${mysql.escape(req.params.id)}`;
-    return new Promise(function(resolve, reject) {
-      con.query(url,
-        (err, rows) => {
-          if (err) {
-            return reject(err);
-          } else {
-              return resolve(rows);
-          }
-        });
-    });
-  },
-  getAllService: function(req){
-    return Promise((resolve, reject) => {
-      let url = `SELECT * FROM studio_service where studio_id=${mysql.escape(req.params.id)}`;
-      con.query(url,
-        (err, rows) => {
-          if(err) {
-            reject(req, res, err);
-          }
-          resolve(rows);
-        });
-    })
-  },
-  getStudioDetails: function(studioId){
-    return new Promise(function(resolve, reject) {
-      try {
-        con.query(`SELECT studio_id, name as studio_name from studio where studio_id = ${studioId}`, function(err, rows, fields) {
-        if (err) {
-          return reject(err);
-        } else {
-          return resolve(rows);
-          }
-        });
-      } catch (err) {
-        return reject(err);
-      }
-    });
-  },
+  // getStudioDetails: function(studioId){
+  //   return new Promise(function(resolve, reject) {
+  //     try {
+  //       con.query(`SELECT studio_id, name as studio_name from studio where studio_id = ${studioId}`, function(err, rows, fields) {
+  //       if (err) {
+  //         return reject(err);
+  //       } else {
+  //         return resolve(rows);
+  //         }
+  //       });
+  //     } catch (err) {
+  //       return reject(err);
+  //     }
+  //   });
+  // },
   getServiceByStudio: function(studioId){
     return new Promise(function(resolve, reject) {
       try {
@@ -69,38 +33,38 @@ var studio = {
       }
     });
   },
-  getStudioCalender: function(studioId){
-    return new Promise(function(resolve, reject) {
-      try {
-        con.query(`SELECT id as slot_id, studio_id, 8am,9am,10am,12pm,1pm,2pm,3pm,4pm,5pm,6pm,7pm,8pm,9pm,10pm,11pm,12am,1am,2am,3am,4am,5am,6am,7am, day FROM studio_timeslots where studio_id = ${studioId} and day >= CURDATE()`,
-        function(err, rows, fields) {
-          if (err) {
-            return reject(err);
-          } else {
-            return resolve(rows);
-          }
-        });
-      } catch (err) {
-        return reject(err);
-      }
-    });
-  },
-  getAllBookedDate: function(studioId){
-    var qry = `SELECT st.studio_id, st.date, bcart.order_id, bcart.slot_id, bcart.booking_time from studio_timeslots as st join booking_cart as bcart on st.date >= CURRENT_DATE() and st.id = bcart.slot_id and st.studio_id = ${studioId} and (bcart.order_id != "" or bcart.order_id != NULL)`;
-    return new Promise(function(resolve, reject) {
-      try {
-        con.query(qry, function(err, rows, fields) {
-        if (err) {
-          return reject(err);
-        } else {
-          return resolve(rows);
-          }
-        });
-      } catch (err) {
-        return reject(err);
-      }
-    });
-  },
+  // getStudioCalender: function(studioId){
+  //   return new Promise(function(resolve, reject) {
+  //     try {
+  //       con.query(`SELECT id as slot_id, studio_id, 8am,9am,10am,12pm,1pm,2pm,3pm,4pm,5pm,6pm,7pm,8pm,9pm,10pm,11pm,12am,1am,2am,3am,4am,5am,6am,7am, day FROM studio_timeslots where studio_id = ${studioId} and day >= CURDATE()`,
+  //       function(err, rows, fields) {
+  //         if (err) {
+  //           return reject(err);
+  //         } else {
+  //           return resolve(rows);
+  //         }
+  //       });
+  //     } catch (err) {
+  //       return reject(err);
+  //     }
+  //   });
+  // },
+  // getAllBookedDate: function(studioId){
+  //   var qry = `SELECT st.studio_id, st.date, bcart.order_id, bcart.slot_id, bcart.booking_time from studio_timeslots as st join booking_cart as bcart on st.date >= CURRENT_DATE() and st.id = bcart.slot_id and st.studio_id = ${studioId} and (bcart.order_id != "" or bcart.order_id != NULL)`;
+  //   return new Promise(function(resolve, reject) {
+  //     try {
+  //       con.query(qry, function(err, rows, fields) {
+  //       if (err) {
+  //         return reject(err);
+  //       } else {
+  //         return resolve(rows);
+  //         }
+  //       });
+  //     } catch (err) {
+  //       return reject(err);
+  //     }
+  //   });
+  // },
   
   checkSlot: function(req){
     var data = req.body;

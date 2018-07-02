@@ -54,6 +54,35 @@ var bookingController = {
               })
             });
         }
+    },
+    setService: (req, res) => {
+        if(req.body){
+            try{
+                var data = req.body;
+            }catch(error){
+                console.log(error);
+            }
+            
+            var promiseArr = [];
+            var cartId;
+
+            if(data.cart_id === undefined || data.cart_id == 0){
+                cartId =  (new Date).getTime();
+
+            }else{
+                cartId = data.cart_id;
+            }
+            if(data.services && data.services.length > 0){
+                console.log(data, cartId);
+                promiseArr.push(booking.setCart(data, parseInt(cartId, 10)));
+            }
+            Promise.all(promiseArr)
+            .then(function (success) {
+                res.json(success);
+            }).catch(function(error) {
+              res.json(error)
+            });
+        }
     }
 };
 

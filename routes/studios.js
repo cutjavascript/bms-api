@@ -29,18 +29,13 @@ router.post('/createStudio', function(req, res) {
 /** Calender details */
 
 
-router.get('/getStudioService/:id', function(req, res) {
-  console.log("getStudioService");
-  studio.getStudioService(req, res);
-});
+// router.get('/getStudioService/:id', function(req, res) {
+//   console.log("getStudioService");
+//   studio.getStudioService(req, res);
+// });
 
 
 router.post('/getStudioService', function(req, res) {
-  console.log("getStudioService");
-  studio.studioServices(req, res);
-});
-router.post('/setServices', function(req, res) {
-  console.log("getStudioService");
   studio.studioServices(req, res);
 });
 

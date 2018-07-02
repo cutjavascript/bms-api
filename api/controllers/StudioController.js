@@ -2,99 +2,46 @@ var studio = require('../models/Studio');
 var moment = require('moment'); 
 
 var studioController = {
-  getAll: function(req, res){
-    studio.getAll()
-    .then(function (success) {
-      res.json({
-        data: rows
-      });
-    }).catch(function(error) {
-      console.log(error);
-      res.json({
-          data: {
-            "status": false,
-            "msg": error
-            }
-      })
-    });
-  },
-  findOne: function(req, res){
-    studio.findOne(req)
-    .then(function (success) {
-      res.json({
-        data: rows
-      });
-    }).catch(function(error) {
-      console.log(error);
-      res.json({
-          data: {
-            "status": false,
-            "msg": error
-            }
-      })
-    });
-  },
-  createStudio: function(req, res){
-    res.json({
-      key: "Create a studio"
-    });
-  },
-  getAllService: function(req, res){
-    studio.getAll(req)
-    .then(function (success) {
-      res.json({
-        data: rows
-      });
-    }).catch(function(error) {
-      console.log(error);
-      res.json({
-          data: {
-            "status": false,
-            "msg": error
-            }
-      })
-    });
-  },
-  getStudioService: function(req, res){
-    if(!isNaN(req.params.id)){
-        Promise.all([
-          studio.getStudioDetails(req.params.id),
-          studio.getServiceByStudio(req.params.id),
-          studio.getStudioCalender(req.params.id),
-          studio.getAllBookedDate(req.params.id)
-        ]).then(function (success) {
-          if(success.length > 0){
-            var bookings = prepareBookingsDetails(Object.assign(success[2]), Object.assign(success[3]));
-            var response = Object.assign({}, success[0][0], {services: success[1]}, { bookings: bookings});
-            res.json({
-              data: response
-            });
-          }else{
-            res.json({
-              data: {
-                "status": false,
-                "msg":"Something went worng"
-                }
-            })
-          }
+  // getStudioService: function(req, res){
+  //   if(!isNaN(req.params.id)){
+  //       Promise.all([
+  //         studio.getStudioDetails(req.params.id),
+  //         studio.getServiceByStudio(req.params.id),
+  //         studio.getStudioCalender(req.params.id),
+  //         studio.getAllBookedDate(req.params.id)
+  //       ]).then(function (success) {
+  //         if(success.length > 0){
+  //           var bookings = prepareBookingsDetails(Object.assign(success[2]), Object.assign(success[3]));
+  //           var response = Object.assign({}, success[0][0], {services: success[1]}, { bookings: bookings});
+  //           res.json({
+  //             data: response
+  //           });
+  //         }else{
+  //           res.json({
+  //             data: {
+  //               "status": false,
+  //               "msg":"Something went worng"
+  //               }
+  //           })
+  //         }
             
-        }).catch(function(error){
-          res.json({
-            data: {
-              "status": false,
-              "msg":error
-              }
-          })
-        });
-    }else{
-      res.json({
-        data: {
-          "status": false,
-          "msg": "Id should be a number"
-          }
-      })
-    }
-  },
+  //       }).catch(function(error){
+  //         res.json({
+  //           data: {
+  //             "status": false,
+  //             "msg":error
+  //             }
+  //         })
+  //       });
+  //   }else{
+  //     res.json({
+  //       data: {
+  //         "status": false,
+  //         "msg": "Id should be a number"
+  //         }
+  //     })
+  //   }
+  // },
   checkSlot: function(req, res){
     studio.checkSlot(req)
     .then((data)=>{
@@ -119,7 +66,7 @@ var studioController = {
         if(success.length > 0){
           var response = Object.assign({}, {services: success});
           res.json({
-            "status": "success",
+            "status": true,
             "msg": "success",
             data: response
           });
@@ -147,9 +94,6 @@ var studioController = {
         }
       })
     }
-  },
-  setService: function(req, res){
-
   }
 };
 

@@ -5,7 +5,11 @@ var bookingsCtrl = require("../api/controllers/bookingsController");
 
 router.post('/setCarts', function(req, res) {
     bookingsCtrl.setCart(req, res);
-  });
+});
+
+router.post('/submitServices', function(req, res) {
+  bookingsCtrl.setService(req, res);
+});
   
   module.exports = router;
   
