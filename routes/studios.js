@@ -34,6 +34,11 @@ router.post('/createStudio', function(req, res) {
 //   studio.getStudioService(req, res);
 // });
 
+router.post('/fetchServicesSlots', function(req, res) {
+  console.log("fetchServicesSlots");
+  studio.fetchServicesSlots(req, res);
+});
+
 
 router.post('/getStudioService', function(req, res) {
   studio.studioServices(req, res);

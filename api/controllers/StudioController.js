@@ -2,46 +2,38 @@ var studio = require('../models/Studio');
 var moment = require('moment'); 
 
 var studioController = {
-  // getStudioService: function(req, res){
-  //   if(!isNaN(req.params.id)){
-  //       Promise.all([
-  //         studio.getStudioDetails(req.params.id),
-  //         studio.getServiceByStudio(req.params.id),
-  //         studio.getStudioCalender(req.params.id),
-  //         studio.getAllBookedDate(req.params.id)
-  //       ]).then(function (success) {
-  //         if(success.length > 0){
-  //           var bookings = prepareBookingsDetails(Object.assign(success[2]), Object.assign(success[3]));
-  //           var response = Object.assign({}, success[0][0], {services: success[1]}, { bookings: bookings});
-  //           res.json({
-  //             data: response
-  //           });
-  //         }else{
-  //           res.json({
-  //             data: {
-  //               "status": false,
-  //               "msg":"Something went worng"
-  //               }
-  //           })
-  //         }
+  fetchServicesSlots: function(req, res){
+    if(req.body){
+      studio.fetchServicesSlots(req.body).then(function (success) {
+          res.json(success);
+
+          // if(success.length > 0){
+          //   var bookings = prepareBookingsDetails(Object.assign(success[2]), Object.assign(success[3]));
+          //   var response = Object.assign({}, success[0][0], {services: success[1]}, { bookings: bookings});
+          //   res.json({
+          //     data: response
+          //   });
+          // }else{
+          //   res.json({
+          //     data: {
+          //       "status": false,
+          //       "msg":"Something went worng"
+          //       }
+          //   })
+          // }
             
-  //       }).catch(function(error){
-  //         res.json({
-  //           data: {
-  //             "status": false,
-  //             "msg":error
-  //             }
-  //         })
-  //       });
-  //   }else{
-  //     res.json({
-  //       data: {
-  //         "status": false,
-  //         "msg": "Id should be a number"
-  //         }
-  //     })
-  //   }
-  // },
+        }).catch(function(error){
+          res.json(error)
+        });
+    }else{
+      res.json({
+        data: {
+          "status": false,
+          "msg": "Request data is not valid"
+          }
+      })
+    }
+  },
   checkSlot: function(req, res){
     studio.checkSlot(req)
     .then((data)=>{
@@ -96,38 +88,6 @@ var studioController = {
     }
   }
 };
-
-
-function prepareBookingsDetails(slotsArr, booked){
-  var bookedObj = {};
-  for(let i=0; i<booked.length; i++){
-    if(bookedObj[booked[i].slot_id] === undefined){
-      bookedObj[booked[i].slot_id+booked[i].booking_time] = [booked[i]];
-    }else{
-      bookedObj[booked[i].slot_id].push(booked[i]);
-    }
-  }
-
-  for(let k=0; k<slotsArr.length; k++){
-      slotsArr[k].timings = [];
-      for(let j in slotsArr[k]){
-        if(j !== 'slot_id' && j !== 'studio_id' && j !== 'day' && j !== 'timings' && slotsArr[k][j] != 0){
-          var timings = {
-            hour: j,
-            amount: parseInt(slotsArr[k][j], 10),
-            booked: bookedObj[slotsArr[k].slot_id+j] ? true : false 
-          };
-          slotsArr[k].timings.push(timings);
-          delete slotsArr[k][j];
-        }else if(j === 'day'){
-          slotsArr[k][j] = moment(slotsArr[k][j]).format('YYYYMMDD');
-        }else if(slotsArr[k][j] == 0){
-          delete slotsArr[k][j];
-        }
-      }
-  }
-  return slotsArr;
-}
 
 function errorLooger(req, res, err){
   /* We log the error internaly */

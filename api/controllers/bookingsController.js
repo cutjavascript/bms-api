@@ -78,7 +78,7 @@ var bookingController = {
             }
             Promise.all(promiseArr)
             .then(function (success) {
-                res.json(success);
+                res.json(success[0]);
             }).catch(function(error) {
               res.json(error)
             });
