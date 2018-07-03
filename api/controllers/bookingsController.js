@@ -83,6 +83,33 @@ var bookingController = {
               res.json(error)
             });
         }
+    },
+    cartServices: (req, res) => {
+        if(req.body && req.body.studio_id && req.body.user_id){
+            var data = req.body;
+            if(!isNaN(data.user_id) && !isNaN(data.studio_id)){
+                booking.cartServices(data)
+                .then(function(success){
+                    res.json(success)
+                }).catch(function(error){
+                    res.json(error)
+                });
+            }else{
+                res.json({
+                    "data":{
+                        "status": false,
+                        "msg":"Request data is not valid"
+                    }
+                })
+            }
+        }else {
+            res.json({
+                "data":{
+                    "status": false,
+                    "msg":"Request data is not valid"
+                }
+            })
+        }
     }
 };
 

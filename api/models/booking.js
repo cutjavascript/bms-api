@@ -12,7 +12,7 @@ let model = {
                         return reject({
                             "data": {
                                 "status": false,
-                                "msg":"Sorry and error has occured.Please try again later."
+                                "msg": "Sorry and error has occured.Please try again later."
                             }
                         });
                     } else {
@@ -30,12 +30,12 @@ let model = {
                                     return reject({
                                         "data": {
                                             "status": false,
-                                            "msg":"Sorry and error has occured.Please try again later."
+                                            "msg": "Sorry and error has occured.Please try again later."
                                         }
                                     });
                                 } else {
                                     self.setServices(data, cartId)
-                                    .then(function(success){
+                                    .then(function(success) {
                                         return resolve(success);
                                     }).catch(function(error) {
                                         return reject(error);
@@ -143,6 +143,32 @@ let model = {
             });
         });
             
+    },
+    cartServices: function(data){
+            return new Promise(function(resolve, reject) {
+            try {
+                var url = `select c.cart_id, c.total, bsc.required_slots as bookings_required, bsc.service_count, s.name, sm.service_name, bsc.price as amount FROM cart c JOIN booking_service_cart bsc ON bsc.cart_id = c.cart_id and (c.order_id = 0 or c.order_id = '') and c.user_id = ${data.user_id} and bsc.studio_id =  ${data.studio_id} JOIN studio s ON s.studio_id = bsc.studio_id JOIN studio_service ss ON ss.id = bsc.service_id JOIN service_master sm ON sm.id = ss.service_id`;
+                con.query(url, function(err, rows) {
+                if (err) {
+                    return reject({
+                        "data":{
+                            "status": false,
+                            "msg":"Sorry cannot find services",
+                        }
+                    });
+                } else {
+                    return resolve({
+                        "status": true,
+                        "msg":"Success",
+                        services: rows
+                    });
+                    
+                }
+                });
+            } catch (err) {
+                return reject(err);
+            }
+            });
     }
 }
 

@@ -11,5 +11,10 @@ router.post('/submitServices', function(req, res) {
   bookingsCtrl.setService(req, res);
 });
   
+
+router.post('/cartServices', function(req, res) {
+  bookingsCtrl.cartServices(req, res);
+});
+  
   module.exports = router;
   
