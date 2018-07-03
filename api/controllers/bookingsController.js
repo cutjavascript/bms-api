@@ -110,6 +110,60 @@ var bookingController = {
                 }
             })
         }
+    },
+    addSlots:  (req, res) =>{
+        if(req.body && req.body.cart_service_id && req.body.user_id){
+            var data = req.body;
+            if(!isNaN(data.user_id) && !isNaN(data.cart_service_id)){
+                booking.addSlots(data)
+                .then(function(success){
+                    res.json(success)
+                }).catch(function(error){
+                    res.json(error)
+                });
+            }else{
+                res.json({
+                    "data":{
+                        "status": false,
+                        "msg":"Request data is not valid"
+                    }
+                })
+            }
+        }else {
+            res.json({
+                "data":{
+                    "status": false,
+                    "msg":"Request data is not valid"
+                }
+            })
+        }
+    },
+    uncheckSlots:  (req, res) =>{
+        if(req.body && req.body.cart_service_id && req.body.user_id){
+            var data = req.body;
+            if(!isNaN(data.user_id) && !isNaN(data.cart_service_id)){
+                booking.removeSlot(data)
+                .then(function(success){
+                    res.json(success)
+                }).catch(function(error){
+                    res.json(error)
+                });
+            }else{
+                res.json({
+                    "data":{
+                        "status": false,
+                        "msg":"Request data is not valid"
+                    }
+                })
+            }
+        }else {
+            res.json({
+                "data":{
+                    "status": false,
+                    "msg":"Request data is not valid"
+                }
+            })
+        }
     }
 };
 

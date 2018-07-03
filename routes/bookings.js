@@ -11,9 +11,16 @@ router.post('/submitServices', function(req, res) {
   bookingsCtrl.setService(req, res);
 });
   
-
 router.post('/cartServices', function(req, res) {
   bookingsCtrl.cartServices(req, res);
+});
+
+router.post('/addSlots', function(req, res) {
+  bookingsCtrl.addSlots(req, res);
+});
+
+router.post('/uncheckSlots', function(req, res) {
+  bookingsCtrl.uncheckSlots(req, res);
 });
   
   module.exports = router;
