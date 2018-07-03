@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 29, 2018 at 03:17 PM
+-- Generation Time: Jul 03, 2018 at 01:36 PM
 -- Server version: 10.1.32-MariaDB
 -- PHP Version: 7.2.5
 
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `booking_cart` (
   `id` int(11) NOT NULL,
-  `cart_id` int(11) NOT NULL,
+  `cart_id` bigint(20) NOT NULL,
   `order_id` int(11) NOT NULL,
   `slot_id` int(11) NOT NULL,
   `service_cart_id` int(11) NOT NULL,
@@ -39,8 +39,15 @@ CREATE TABLE `booking_cart` (
   `studio_id` int(11) NOT NULL,
   `booking_time` varchar(250) NOT NULL,
   `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `booking_cart`
+--
+
+INSERT INTO `booking_cart` (`id`, `cart_id`, `order_id`, `slot_id`, `service_cart_id`, `price`, `user_id`, `studio_id`, `booking_time`, `created_at`, `updated_at`) VALUES
+(4, 1530540598108, 0, 1, 37, 5000, 2, 1, '4pm', '2018-07-03 01:04:29.114349', '2018-07-03 01:04:29.114349');
 
 -- --------------------------------------------------------
 
@@ -50,7 +57,7 @@ CREATE TABLE `booking_cart` (
 
 CREATE TABLE `booking_service_cart` (
   `id` int(11) NOT NULL,
-  `cart_id` int(11) NOT NULL,
+  `cart_id` bigint(20) NOT NULL,
   `order_id` int(11) NOT NULL,
   `service_id` int(11) NOT NULL,
   `price` varchar(250) NOT NULL,
@@ -59,8 +66,18 @@ CREATE TABLE `booking_service_cart` (
   `user_id` int(11) NOT NULL,
   `studio_id` int(11) NOT NULL,
   `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `booking_service_cart`
+--
+
+INSERT INTO `booking_service_cart` (`id`, `cart_id`, `order_id`, `service_id`, `price`, `service_count`, `required_slots`, `user_id`, `studio_id`, `created_at`, `updated_at`) VALUES
+(37, 1530540598108, 0, 1, '3000', 0, 1, 2, 1, '2018-07-02 07:09:58.156192', '2018-07-02 07:09:58.156192'),
+(38, 1530540598108, 0, 2, '2000', 4, 0, 2, 1, '2018-07-02 07:09:58.156192', '2018-07-02 07:09:58.156192'),
+(39, 1530540598108, 0, 1, '3000', 0, 1, 2, 1, '2018-07-03 04:36:00.386907', '2018-07-03 04:36:00.386907'),
+(40, 1530540598108, 0, 2, '2000', 4, 0, 2, 1, '2018-07-03 04:36:00.386907', '2018-07-03 04:36:00.386907');
 
 -- --------------------------------------------------------
 
@@ -70,14 +87,21 @@ CREATE TABLE `booking_service_cart` (
 
 CREATE TABLE `cart` (
   `id` int(11) NOT NULL,
-  `cart_id` int(11) NOT NULL,
+  `cart_id` bigint(20) NOT NULL,
   `order_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `total` int(11) NOT NULL,
   `status` varchar(255) NOT NULL,
-  `created_at` datetime(6) NOT NULL,
-  `updated_at` datetime(6) NOT NULL
+  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `cart`
+--
+
+INSERT INTO `cart` (`id`, `cart_id`, `order_id`, `user_id`, `total`, `status`, `created_at`, `updated_at`) VALUES
+(33, 1530540598108, 0, 2, 21000, 'unpaid', '2018-07-02 07:09:58.111143', '2018-07-03 04:36:00.455774');
 
 -- --------------------------------------------------------
 
@@ -92,7 +116,7 @@ CREATE TABLE `comments` (
   `comments_reply_id` int(10) NOT NULL,
   `comments` text NOT NULL,
   `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -103,13 +127,13 @@ CREATE TABLE `comments` (
 
 CREATE TABLE `orders` (
   `id` int(11) NOT NULL,
-  `order_id` int(11) NOT NULL,
+  `order_id` bigint(20) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `cart_id` int(11) NOT NULL,
+  `cart_id` bigint(20) NOT NULL,
   `status` varchar(250) NOT NULL,
   `total` int(10) NOT NULL,
   `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+  `updated_at` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -123,7 +147,7 @@ CREATE TABLE `service_master` (
   `service_name` varchar(250) NOT NULL,
   `slots_required` int(10) NOT NULL,
   `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -178,7 +202,7 @@ CREATE TABLE `studio` (
   `zip` varchar(250) NOT NULL,
   `user_id` int(10) NOT NULL,
   `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -201,7 +225,7 @@ CREATE TABLE `studio_ratings` (
   `user_id` int(10) NOT NULL,
   `ratings` int(10) NOT NULL,
   `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -223,8 +247,8 @@ CREATE TABLE `studio_service` (
   `slots_required` varchar(250) NOT NULL,
   `studio_id` int(11) NOT NULL,
   `price` int(10) NOT NULL,
-  `created_at` datetime(6) NOT NULL,
-  `updated_at` datetime(6) NOT NULL
+  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -271,8 +295,16 @@ CREATE TABLE `studio_timeslots` (
   `7am` varchar(250) NOT NULL,
   `day` date NOT NULL,
   `created_at` datetime(6) DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `studio_timeslots`
+--
+
+INSERT INTO `studio_timeslots` (`id`, `studio_id`, `studio_service_id`, `8am`, `9am`, `10am`, `11am`, `12pm`, `1pm`, `2pm`, `3pm`, `4pm`, `5pm`, `6pm`, `7pm`, `8pm`, `9pm`, `10pm`, `11pm`, `12am`, `1am`, `2am`, `3am`, `4am`, `5am`, `6am`, `7am`, `day`, `created_at`, `updated_at`) VALUES
+(1, 1, 2, '2000', '2000', '1000', '2000', '2000', '2000', '5000', '1000', '5000', '5000', '5000', '2000', '2500', '8001', '5000', '2000', '1000', '1000', '2000', '2000', '3000', '2000', '2000', '1000', '2018-07-04', '0000-00-00 00:00:00.000000', '0000-00-00 00:00:00.000000'),
+(2, 1, 2, '1000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2018-07-05', '0000-00-00 00:00:00.000000', '0000-00-00 00:00:00.000000');
 
 -- --------------------------------------------------------
 
@@ -292,7 +324,7 @@ CREATE TABLE `users` (
   `usertype` enum('user','vendor','admin','') NOT NULL,
   `status` enum('true','false','','') NOT NULL,
   `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -315,8 +347,8 @@ ALTER TABLE `booking_cart`
   ADD KEY `studio_id` (`studio_id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `slot_id` (`slot_id`),
-  ADD KEY `cart_id` (`cart_id`),
-  ADD KEY `service_cart_id` (`service_cart_id`);
+  ADD KEY `service_cart_id` (`service_cart_id`),
+  ADD KEY `cart_id` (`cart_id`);
 
 --
 -- Indexes for table `booking_service_cart`
@@ -326,8 +358,8 @@ ALTER TABLE `booking_service_cart`
   ADD KEY `studio_id` (`studio_id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `service_id` (`service_id`),
-  ADD KEY `cart_id` (`cart_id`),
-  ADD KEY `booking_service_cart_ibfk_3` (`order_id`);
+  ADD KEY `booking_service_cart_ibfk_3` (`order_id`),
+  ADD KEY `cart_id` (`cart_id`);
 
 --
 -- Indexes for table `cart`
@@ -405,19 +437,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `booking_cart`
 --
 ALTER TABLE `booking_cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `booking_service_cart`
 --
 ALTER TABLE `booking_service_cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `comments`
@@ -459,7 +491,7 @@ ALTER TABLE `studio_service`
 -- AUTO_INCREMENT for table `studio_timeslots`
 --
 ALTER TABLE `studio_timeslots`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -478,8 +510,8 @@ ALTER TABLE `booking_cart`
   ADD CONSTRAINT `booking_cart_ibfk_1` FOREIGN KEY (`studio_id`) REFERENCES `studio` (`studio_id`),
   ADD CONSTRAINT `booking_cart_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `booking_cart_ibfk_3` FOREIGN KEY (`slot_id`) REFERENCES `studio_timeslots` (`id`),
-  ADD CONSTRAINT `booking_cart_ibfk_4` FOREIGN KEY (`cart_id`) REFERENCES `cart` (`cart_id`),
-  ADD CONSTRAINT `booking_cart_ibfk_5` FOREIGN KEY (`service_cart_id`) REFERENCES `booking_service_cart` (`id`);
+  ADD CONSTRAINT `booking_cart_ibfk_5` FOREIGN KEY (`service_cart_id`) REFERENCES `booking_service_cart` (`id`),
+  ADD CONSTRAINT `booking_cart_ibfk_6` FOREIGN KEY (`cart_id`) REFERENCES `cart` (`cart_id`);
 
 --
 -- Constraints for table `booking_service_cart`
@@ -487,7 +519,6 @@ ALTER TABLE `booking_cart`
 ALTER TABLE `booking_service_cart`
   ADD CONSTRAINT `booking_service_cart_ibfk_1` FOREIGN KEY (`studio_id`) REFERENCES `studio` (`studio_id`),
   ADD CONSTRAINT `booking_service_cart_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `booking_service_cart_ibfk_3` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`),
   ADD CONSTRAINT `booking_service_cart_ibfk_4` FOREIGN KEY (`service_id`) REFERENCES `studio_service` (`id`),
   ADD CONSTRAINT `booking_service_cart_ibfk_5` FOREIGN KEY (`cart_id`) REFERENCES `cart` (`cart_id`);
 
@@ -495,7 +526,6 @@ ALTER TABLE `booking_service_cart`
 -- Constraints for table `cart`
 --
 ALTER TABLE `cart`
-  ADD CONSTRAINT `cart_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`),
   ADD CONSTRAINT `cart_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
@@ -509,8 +539,7 @@ ALTER TABLE `comments`
 -- Constraints for table `orders`
 --
 ALTER TABLE `orders`
-  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`cart_id`) REFERENCES `cart` (`cart_id`);
+  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `studio`
