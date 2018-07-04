@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 var con = require('../connection/mysqlcon');
+var moment = require('moment'); 
 
 let model = {
     setCart: function(data, cartId) {
@@ -298,7 +299,137 @@ let model = {
                 return reject(err);
             }
         });
-    }
+    },
+    getCart: function(data){
 
+        let self = this;
+        return new Promise(function(resolve, reject) {
+            try {
+                con.query(`select cart_id, total as cart_total from cart where user_id = ${data.user_id} and order_id = 0`,
+                function(err, rows, fields) {
+                    if (err) {
+                        return reject(err);
+                    } else {
+                        self.getServiceDetailsByCart(rows[0], data.user_id)
+                        .then(function(success){
+                            return resolve({
+                                data: success
+                            });
+                        }).catch(function(error){
+                            return reject(error);
+                        });
+                    }
+                });
+            } catch (err) {
+                return reject(err);
+            }
+        });
+    },
+    getServiceDetailsByCart: function(data, user_id) {
+        let self = this;
+        return new Promise(function(resolve, reject) {
+            try {
+                con.query(`select bsc.id, bsc.service_id, bsc.price as amount, bsc.service_count as count, bsc.required_slots, sm.service_name from booking_service_cart bsc JOIN studio_service ss ON ss.id = bsc.service_id and bsc.cart_id = ${data.cart_id} JOIN service_master sm ON sm.id = ss.service_id`,
+                function(err, rows, fields) {
+                    if (err) {
+                        return reject({
+                            "data": {
+                                "status": false,
+                                "msg":"Sorry and error has occured.Please try again later."
+                            }
+                        });
+                    } else {
+                        data.status = true;
+                        data.msg = "cart details found";
+                        data.services = rows;
+
+                        self.getSlotsByCart(data, data.cart_id)
+                        .then(function(success){
+                            return resolve(success);
+                        }).catch(function(error){
+                            return reject(error);
+                        });
+                        // return resolve(data);
+                    }
+                });
+            } catch (err) {
+                return reject({
+                    "data": {
+                        "status": false,
+                        "msg":"Sorry and error has occured.Please try again later."
+                    }
+                });
+            }
+        });
+    },
+    getSlotsByCart: function(data, cartId){
+        let self = this;
+        return new Promise(function(resolve, reject){
+            try{
+                con.query(`SELECT bc.service_cart_id, bc.price as amount, st.day, bc.booking_time FROM booking_cart bc JOIN studio_timeslots st ON st.id = bc.slot_id and bc.cart_id = ${cartId} and bc.order_id = 0`, function(err, rows){
+                    if (err) {
+                        return reject({
+                            "data": {
+                                "status": false,
+                                "msg":"Sorry and error has occured.Please try again later."
+                            }
+                        });
+                    } else {
+                        let result = self.conposeCartData(data, rows);
+                        return resolve(result);
+                    }
+                });
+            }catch(e){
+                return reject({
+                    "data": {
+                        "status": false,
+                        "msg":"Sorry and error has occured.Please try again later."
+                    }
+                });
+            }
+        })
+    },
+    conposeCartData: function(data, rows){
+        bookingObj = {};
+        for(var i=0; i<rows.length;i++){
+            rows[i].day = moment(rows[i].day).format('YYYYMMDD');
+            if(bookingObj[rows[i].service_cart_id] === undefined){
+                bookingObj[rows[i].service_cart_id] = {
+                    total: 0,
+                    list: []
+                };
+                bookingObj[rows[i].service_cart_id].total += rows[i].amount;
+                bookingObj[rows[i].service_cart_id].list.push(rows[i]);
+            }else{
+                bookingObj[rows[i].service_cart_id].total += rows[i].amount;
+                bookingObj[rows[i].service_cart_id].list.push(rows[i]);            
+            }
+        }
+
+        for(var i=0; i<data.services.length;i++){
+            if(bookingObj[data.services[i].id]){
+                data.services[i].amount = bookingObj[data.services[i].id].total;
+                var list = bookingObj[data.services[i].id].list,
+                    obj = {};
+                for(var k=0;k<list.length; k++){
+                    if(obj[list[k].day] === undefined){
+                        obj[list[k].day] = [];
+                        obj[list[k].day].push(list[k]);
+                    }else{
+                        obj[list[k].day].push(list[k]);
+                    }
+                }
+
+                for(c in obj){
+                    data.services[i].bookings = {
+                        day: c,
+                        timings: obj[c]
+                    }
+                }
+            }
+        }
+
+        return data;
+    }
 }
 module.exports = model;

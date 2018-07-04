@@ -164,6 +164,33 @@ var bookingController = {
                 }
             })
         }
+    },
+    getCart: (req, res) => {
+        if(req.body && req.body.user_id){
+            var data = req.body;
+            if(!isNaN(data.user_id)){
+                booking.getCart(data)
+                .then(function(success){
+                    res.json(success)
+                }).catch(function(error){
+                    res.json(error)
+                });
+            }else{
+                res.json({
+                    "data":{
+                        "status": false,
+                        "msg":"Request data is not valid"
+                    }
+                })
+            }
+        }else {
+            res.json({
+                "data":{
+                    "status": false,
+                    "msg":"Request data is not valid"
+                }
+            })
+        }
     }
 };
 

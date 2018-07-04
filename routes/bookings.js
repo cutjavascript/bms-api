@@ -23,5 +23,10 @@ router.post('/uncheckSlots', function(req, res) {
   bookingsCtrl.uncheckSlots(req, res);
 });
   
+
+router.post('/getCart', function(req, res) {
+  bookingsCtrl.getCart(req, res);
+});
+  
   module.exports = router;
   
