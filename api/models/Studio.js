@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 var con = require('../connection/mysqlcon');
+var moment = require('moment'); 
 
 
 var studio = {
@@ -42,18 +43,18 @@ var studio = {
             return reject(err);
           } else {
             if(rows.length > 0 && rows[0].required_slots > 0){
-              console.log("rows: ", rows);
               Promise.all([
                 studio.getStudioCalender(data, rows[0]),
-                studio.getAllBookedDate(data, rows[0])
+                studio.getAllBookedDate(data, rows[0]),
+                studio.getAllBookedDateByUser(data, rows[0])
               ])
               .then(function (success) {
                 if(success.length > 0){
                   try{
-                    var bookings = prepareBookingsDetails(Object.assign(success[0]), Object.assign(success[1]));
-                    var response = Object.assign({}, bookkings);
+                    var bookings = prepareBookingsDetails(Object.assign(success[0]), Object.assign(success[1]), Object.assign(success[2]));
+                    // console.log("bookings: ",bookings);
                   }catch(e){
-                    
+                      console.log("error: ", e)
                   }
                   
                   return resolve({
@@ -61,7 +62,7 @@ var studio = {
                       "status": true,
                       studio_id: rows[0].studio_id,
                       service_id: rows[0].service_id,
-                      bookings: success
+                      bookings: bookings
                       }
                   });
                 }else{
@@ -116,7 +117,7 @@ var studio = {
     });
   },
   getAllBookedDate: function(data, obj){
-    var qry = `SELECT st.studio_id, st.day, bcart.order_id, bcart.slot_id, bcart.booking_time from studio_timeslots as st join booking_cart as bcart on st.day >= CURRENT_DATE() and st.id = bcart.slot_id and st.studio_id = ${obj.studio_id} and st.studio_service_id = ${obj.service_id}  and (bcart.order_id != "" or bcart.order_id != 0)`;
+    var qry = `SELECT st.studio_id, st.day, bcart.order_id, bcart.slot_id, bcart.booking_time from studio_timeslots as st join booking_cart as bcart on st.day >= CURRENT_DATE() and st.id = bcart.slot_id and st.studio_id = ${obj.studio_id} and st.studio_service_id = ${obj.service_id} and (bcart.order_id != "" or bcart.order_id != 0)`;
     console.log(qry)
     return new Promise(function(resolve, reject) {
       try {
@@ -132,7 +133,23 @@ var studio = {
       }
     });
   },
-  
+  getAllBookedDateByUser: function(data, obj){
+    var qry = `SELECT st.studio_id, st.day, bcart.order_id, bcart.slot_id, bcart.booking_time from studio_timeslots as st join booking_cart as bcart on st.day >= CURRENT_DATE() and st.id = bcart.slot_id and st.studio_id = ${obj.studio_id} and st.studio_service_id = ${obj.service_id} and bcart.user_id = ${data.user_id} and (bcart.order_id = "" or bcart.order_id = 0)`;
+    console.log(qry)
+    return new Promise(function(resolve, reject) {
+      try {
+        con.query(qry, function(err, rows, fields) {
+        if (err) {
+          return reject(err);
+        } else {
+          return resolve(rows);
+          }
+        });
+      } catch (err) {
+        return reject(err);
+      }
+    });
+  },
   checkSlot: function(req){
     var data = req.body;
     return new Promise(function(resolve, reject) {
@@ -167,8 +184,9 @@ module.exports = studio;
 
 
 
-function prepareBookingsDetails(slotsArr, booked){
+function prepareBookingsDetails(slotsArr, booked, userBooked){
   var bookedObj = {};
+  var userBookedObj = {};
   for(let i=0; i<booked.length; i++){
     if(bookedObj[booked[i].slot_id] === undefined){
       bookedObj[booked[i].slot_id+booked[i].booking_time] = [booked[i]];
@@ -176,7 +194,14 @@ function prepareBookingsDetails(slotsArr, booked){
       bookedObj[booked[i].slot_id].push(booked[i]);
     }
   }
-
+  for(let i=0; i<userBooked.length; i++){
+    if(userBookedObj[userBooked[i].slot_id] === undefined){
+      userBookedObj[userBooked[i].slot_id+userBooked[i].booking_time] = [userBooked[i]];
+    }else{
+      userBookedObj[userBooked[i].slot_id].push(userBooked[i]);
+    }
+  }
+  console.log("userBooked: ", userBooked);
   for(let k=0; k<slotsArr.length; k++){
       slotsArr[k].timings = [];
       for(let j in slotsArr[k]){
@@ -184,7 +209,8 @@ function prepareBookingsDetails(slotsArr, booked){
           var timings = {
             hour: j,
             amount: parseInt(slotsArr[k][j], 10),
-            booked: bookedObj[slotsArr[k].slot_id+j] ? true : false 
+            booked: bookedObj[slotsArr[k].slot_id+j] ? true : false,
+            reserved: userBookedObj[slotsArr[k].slot_id+j] ? true : false 
           };
           slotsArr[k].timings.push(timings);
           delete slotsArr[k][j];

@@ -66,28 +66,28 @@ let model = {
             });
         });
     },
-    setBookingCart: function(data, cartId){
-        values = [];
-        for(let i=0; i<data.bookings.length; i++){
-            values[i] = [];
-            values[i].push(`(${data.bookings[i].slot_id},(select ${data.bookings[i].booking_time} from studio_timeslots where id = ${data.bookings[i].slot_id}),'${data.bookings[i].booking_time}','${data.user_id}','${data.studio_id}',${cartId})`);
-        }
-        return new Promise(function(resolve, reject) {
-            try {
-                con.query(`INSERT INTO booking_cart (slot_id, price, booking_time, user_id, studio_id, cart_id) 
-                VALUES ${values.join(',')}`,
-                function(err, rows, fields) {
-                    if (err) {
-                        return reject(err);
-                    } else {
-                        return resolve(rows);
-                    }
-                });
-            } catch (err) {
-                return reject(err);
-            }
-        });
-    },
+    // setBookingCart: function(data, cartId){
+    //     values = [];
+    //     for(let i=0; i<data.bookings.length; i++){
+    //         values[i] = [];
+    //         values[i].push(`(${data.bookings[i].slot_id},(select ${data.bookings[i].booking_time} from studio_timeslots where id = ${data.bookings[i].slot_id}),'${data.bookings[i].booking_time}','${data.user_id}','${data.studio_id}',${cartId})`);
+    //     }
+    //     return new Promise(function(resolve, reject) {
+    //         try {
+    //             con.query(`INSERT INTO booking_cart (slot_id, price, booking_time, user_id, studio_id, cart_id) 
+    //             VALUES ${values.join(',')}`,
+    //             function(err, rows, fields) {
+    //                 if (err) {
+    //                     return reject(err);
+    //                 } else {
+    //                     return resolve(rows);
+    //                 }
+    //             });
+    //         } catch (err) {
+    //             return reject(err);
+    //         }
+    //     });
+    // },
     setServices: function(data, cartId){
         let self = this;
         return new Promise(function(resolve, reject){
