@@ -94,10 +94,11 @@ let model = {
             var values = [];
             for(let i=0; i<data.services.length; i++){
                 values[i] = [];
-                values[i].push(`('',${cartId}, '', ${data.services[i].service_id},(SELECT price FROM studio_service where id = ${data.services[i].service_id}), ${data.services[i].count},(SELECT slots_required FROM studio_service where id = ${data.services[i].service_id}),${data.user_id},${data.studio_id})`);
+                let id = data.services[i].id ? data.services[i].id : '';
+                values[i].push(`('${id}',${cartId}, '', ${data.services[i].service_id},(SELECT price FROM studio_service where id = ${data.services[i].service_id}), ${data.services[i].count},(SELECT slots_required FROM studio_service where id = ${data.services[i].service_id}),${data.user_id},${data.studio_id})`);
             }
 
-            con.query(`INSERT INTO booking_service_cart (id, cart_id, order_id, service_id, price, service_count, required_slots, user_id, studio_id) VALUES ${values.join(',')}`,function(err, rows){
+            con.query(`INSERT INTO booking_service_cart (id, cart_id, order_id, service_id, price, service_count, required_slots, user_id, studio_id) VALUES ${values.join(',')}  ON DUPLICATE KEY UPDATE service_count=VALUES(service_count)`,function(err, rows){
                 if (err){
                     return reject({
                         "data": {
@@ -141,13 +142,26 @@ let model = {
                                 }
                             });
                         } else {
-                            return resolve({
-                                "data": {
-                                    "status": true,
-                                    "msg":"Data updated",
-                                    "cart_total": totalCartPrice
+                            con.query(`select id, service_id, service_count as count from booking_service_cart where cart_id = ${cartId} and order_id = 0`, function(err, rows){
+                                if (err) {
+                                    return reject({
+                                        "data": {
+                                            "status": false,
+                                            "msg":"Sorry and error has occured.Please try again later."
+                                        }
+                                    });
+                                } else {
+                                    return resolve({
+                                        "data": {
+                                            "status": true,
+                                            "msg":"Data updated",
+                                            "cart_total": totalCartPrice,
+                                            service: rows
+                                        }
+                                    });
                                 }
                             });
+                            
                         }
                     })
                 }
@@ -287,5 +301,4 @@ let model = {
     }
 
 }
-
 module.exports = model;
