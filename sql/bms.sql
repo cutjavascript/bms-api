@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 03, 2018 at 01:36 PM
+-- Generation Time: Jul 05, 2018 at 07:26 AM
 -- Server version: 10.1.32-MariaDB
 -- PHP Version: 7.2.5
 
@@ -31,7 +31,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `booking_cart` (
   `id` int(11) NOT NULL,
   `cart_id` bigint(20) NOT NULL,
-  `order_id` int(11) NOT NULL,
+  `order_id` bigint(20) NOT NULL,
   `slot_id` int(11) NOT NULL,
   `service_cart_id` int(11) NOT NULL,
   `price` int(10) NOT NULL,
@@ -47,7 +47,9 @@ CREATE TABLE `booking_cart` (
 --
 
 INSERT INTO `booking_cart` (`id`, `cart_id`, `order_id`, `slot_id`, `service_cart_id`, `price`, `user_id`, `studio_id`, `booking_time`, `created_at`, `updated_at`) VALUES
-(4, 1530540598108, 0, 1, 37, 5000, 2, 1, '4pm', '2018-07-03 01:04:29.114349', '2018-07-03 01:04:29.114349');
+(6, 1530690003016, 0, 1, 52, 5000, 2, 1, '5pm', '2018-07-04 03:18:45.503682', '2018-07-04 03:18:45.503682'),
+(7, 1530690003016, 0, 1, 52, 2500, 2, 1, '8pm', '2018-07-04 03:26:29.095659', '2018-07-04 05:58:31.868213'),
+(9, 1530690003016, 0, 1, 52, 2000, 2, 1, '7pm', '2018-07-04 05:59:28.757582', '2018-07-04 05:59:28.757582');
 
 -- --------------------------------------------------------
 
@@ -58,9 +60,9 @@ INSERT INTO `booking_cart` (`id`, `cart_id`, `order_id`, `slot_id`, `service_car
 CREATE TABLE `booking_service_cart` (
   `id` int(11) NOT NULL,
   `cart_id` bigint(20) NOT NULL,
-  `order_id` int(11) NOT NULL,
+  `order_id` bigint(20) NOT NULL,
   `service_id` int(11) NOT NULL,
-  `price` varchar(250) NOT NULL,
+  `price` bigint(20) NOT NULL,
   `service_count` int(10) NOT NULL,
   `required_slots` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -74,10 +76,8 @@ CREATE TABLE `booking_service_cart` (
 --
 
 INSERT INTO `booking_service_cart` (`id`, `cart_id`, `order_id`, `service_id`, `price`, `service_count`, `required_slots`, `user_id`, `studio_id`, `created_at`, `updated_at`) VALUES
-(37, 1530540598108, 0, 1, '3000', 0, 1, 2, 1, '2018-07-02 07:09:58.156192', '2018-07-02 07:09:58.156192'),
-(38, 1530540598108, 0, 2, '2000', 4, 0, 2, 1, '2018-07-02 07:09:58.156192', '2018-07-02 07:09:58.156192'),
-(39, 1530540598108, 0, 1, '3000', 0, 1, 2, 1, '2018-07-03 04:36:00.386907', '2018-07-03 04:36:00.386907'),
-(40, 1530540598108, 0, 2, '2000', 4, 0, 2, 1, '2018-07-03 04:36:00.386907', '2018-07-03 04:36:00.386907');
+(52, 1530690003016, 0, 1, 3000, 0, 1, 2, 1, '2018-07-04 00:40:03.043163', '2018-07-04 00:40:03.043163'),
+(53, 1530690003016, 0, 2, 2000, 4, 0, 2, 1, '2018-07-04 00:40:03.043163', '2018-07-04 00:42:17.008967');
 
 -- --------------------------------------------------------
 
@@ -88,7 +88,7 @@ INSERT INTO `booking_service_cart` (`id`, `cart_id`, `order_id`, `service_id`, `
 CREATE TABLE `cart` (
   `id` int(11) NOT NULL,
   `cart_id` bigint(20) NOT NULL,
-  `order_id` int(11) NOT NULL,
+  `order_id` bigint(20) NOT NULL,
   `user_id` int(11) NOT NULL,
   `total` int(11) NOT NULL,
   `status` varchar(255) NOT NULL,
@@ -101,7 +101,7 @@ CREATE TABLE `cart` (
 --
 
 INSERT INTO `cart` (`id`, `cart_id`, `order_id`, `user_id`, `total`, `status`, `created_at`, `updated_at`) VALUES
-(33, 1530540598108, 0, 2, 21000, 'unpaid', '2018-07-02 07:09:58.111143', '2018-07-03 04:36:00.455774');
+(35, 1530690003016, 0, 2, 17500, 'unpaid', '2018-07-04 00:40:03.018234', '2018-07-04 05:59:28.801918');
 
 -- --------------------------------------------------------
 
@@ -303,8 +303,8 @@ CREATE TABLE `studio_timeslots` (
 --
 
 INSERT INTO `studio_timeslots` (`id`, `studio_id`, `studio_service_id`, `8am`, `9am`, `10am`, `11am`, `12pm`, `1pm`, `2pm`, `3pm`, `4pm`, `5pm`, `6pm`, `7pm`, `8pm`, `9pm`, `10pm`, `11pm`, `12am`, `1am`, `2am`, `3am`, `4am`, `5am`, `6am`, `7am`, `day`, `created_at`, `updated_at`) VALUES
-(1, 1, 2, '2000', '2000', '1000', '2000', '2000', '2000', '5000', '1000', '5000', '5000', '5000', '2000', '2500', '8001', '5000', '2000', '1000', '1000', '2000', '2000', '3000', '2000', '2000', '1000', '2018-07-04', '0000-00-00 00:00:00.000000', '0000-00-00 00:00:00.000000'),
-(2, 1, 2, '1000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2018-07-05', '0000-00-00 00:00:00.000000', '0000-00-00 00:00:00.000000');
+(1, 1, 1, '2000', '2000', '1000', '2000', '2000', '2000', '5000', '1000', '5000', '5000', '5000', '2000', '2500', '8001', '5000', '2000', '1000', '1000', '2000', '2000', '3000', '2000', '2000', '1000', '2018-07-04', '0000-00-00 00:00:00.000000', '2018-07-03 04:56:32.026800'),
+(2, 1, 1, '1000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2000', '2018-07-05', '0000-00-00 00:00:00.000000', '2018-07-03 04:56:43.028928');
 
 -- --------------------------------------------------------
 
@@ -437,19 +437,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `booking_cart`
 --
 ALTER TABLE `booking_cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `booking_service_cart`
 --
 ALTER TABLE `booking_service_cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `comments`
